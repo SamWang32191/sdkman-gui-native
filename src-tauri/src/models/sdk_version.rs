@@ -73,7 +73,15 @@ impl JdkCategory {
         }
 
         // 检查是否为NIK（如 25.0.1-nik, 25.0.1.fx-nik）
-        if lower.contains("-nik") {
+        // 也包含 GraalVM 相关产品：
+        // - Liberica NIK: 标识符以 -nik 结尾（已包含在 contains("-nik") 中）
+        // - Mandrel: 标识符包含 -mandrel
+        // - GraalVM: 标识符包含 -graal 或 -graalvm
+        if lower.contains("-nik")
+            || lower.contains("-mandrel")
+            || lower.contains("-graal")
+            || lower.contains("-graalvm")
+        {
             categories.insert(JdkCategory::Nik);
         }
 
@@ -83,5 +91,60 @@ impl JdkCategory {
         }
 
         categories.into_iter().collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_nik_identification() {
+        // 标准 NIK
+        let categories = JdkCategory::from_identifier("25.0.1-nik");
+        assert!(categories.contains(&JdkCategory::Nik));
+
+        // JavaFX + NIK
+        let categories = JdkCategory::from_identifier("25.0.1.fx-nik");
+        assert!(categories.contains(&JdkCategory::Nik));
+        assert!(categories.contains(&JdkCategory::JavaFx));
+
+        // Liberica NIK（应该以 -nik 结尾）
+        let categories = JdkCategory::from_identifier("25.0.1-nik");
+        assert!(categories.contains(&JdkCategory::Nik));
+
+        // 普通 Liberica（不应该是 NIK）
+        let categories = JdkCategory::from_identifier("25.0.1-librca");
+        assert!(!categories.contains(&JdkCategory::Nik));
+        assert!(categories.contains(&JdkCategory::Jdk));
+
+        // Mandrel
+        let categories = JdkCategory::from_identifier("25.0.1-mandrel");
+        assert!(categories.contains(&JdkCategory::Nik));
+
+        // GraalVM CE
+        let categories = JdkCategory::from_identifier("25.0.1-graal");
+        assert!(categories.contains(&JdkCategory::Nik));
+
+        // GraalVM Oracle
+        let categories = JdkCategory::from_identifier("25.0.1-graalvm");
+        assert!(categories.contains(&JdkCategory::Nik));
+
+        // 普通 JDK（不应该是 NIK）
+        let categories = JdkCategory::from_identifier("25.0.1-tem");
+        assert!(!categories.contains(&JdkCategory::Nik));
+        assert!(categories.contains(&JdkCategory::Jdk));
+
+        // JavaFX + Liberica（不应该是 NIK）
+        let categories = JdkCategory::from_identifier("21.0.9.fx-librca");
+        assert!(categories.contains(&JdkCategory::JavaFx));
+        assert!(!categories.contains(&JdkCategory::Nik));
+    }
+
+    #[test]
+    fn test_empty_identifier() {
+        let categories = JdkCategory::from_identifier("");
+        assert_eq!(categories.len(), 1);
+        assert!(categories.contains(&JdkCategory::Jdk));
     }
 }
