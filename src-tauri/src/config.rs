@@ -18,7 +18,7 @@ pub struct AppConfig {
     /// 主题: light, dark, auto
     pub theme: String,
 
-    /// 语言: en, zh, auto (auto = 根据系统语言自动检测)
+    /// 语言: en, zh, zh-TW, auto (auto = 根据系统语言自动检测)
     pub language: String,
 
     /// SDKMAN路径

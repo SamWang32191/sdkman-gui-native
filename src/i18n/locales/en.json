@@ -128,6 +128,7 @@
     "languageAuto": "Auto Detect",
     "languageEnglish": "English",
     "languageChinese": "简体中文",
+    "languageTraditionalChinese": "繁體中文",
     "sdkmanPath": "SDKMAN Path",
     "sdkmanBrowse": "Browse",
     "proxy": "Proxy Settings",

@@ -2,7 +2,7 @@
 
 For the JavaFX version, please refer to: [sdkman-gui](https://github.com/youngledo/sdkman-gui).
 
-**English** | [中文](README_ZH.md)
+**English** | [繁體中文](README_ZH_TW.md) | [简体中文](README_ZH.md)
 
 Cross-platform desktop application built with **Tauri + Vue + Rust**, offering an elegant GUI interface for [SDKMAN](https://github.com/sdkman).
 
@@ -169,6 +169,29 @@ npm run tauri dev
 # Build for production
 npm run tauri build
 ```
+
+### Local Packaging
+
+Build an installable package on your current OS:
+
+```bash
+cd /Users/samwang/Repo/sdkman-gui-native
+chmod +x build.sh
+./build.sh
+```
+
+Alternative command (without artifact rename logic in `build.sh`):
+
+```bash
+npm install
+npm run tauri build
+```
+
+Build output paths:
+
+- macOS: `src-tauri/target/release/bundle/dmg/`
+- Windows: `src-tauri/target/release/bundle/msi/`
+- Linux: `src-tauri/target/release/bundle/deb/` and `src-tauri/target/release/bundle/rpm/`
 
 ## 🙏 Acknowledgments
 

@@ -2,7 +2,7 @@
 
 JavaFX版本，请看：[sdkman-gui](https://github.com/youngledo/sdkman-gui)。
 
-[English](README.md) | **中文**
+[English](README.md) | [繁體中文](README_ZH_TW.md) | **简体中文**
 
 跨平台桌面应用，基于**Tauri + Vue + Rust**开发，为[SDKMAN](https://github.com/sdkman)提供优雅的图形化界面。
 
@@ -169,6 +169,29 @@ npm run tauri dev
 # 构建生产版本
 npm run tauri build
 ```
+
+### 本地打包
+
+在当前操作系统上打包可安装文件：
+
+```bash
+cd /Users/samwang/Repo/sdkman-gui-native
+chmod +x build.sh
+./build.sh
+```
+
+可选方式（不包含 `build.sh` 里的产物重命名逻辑）：
+
+```bash
+npm install
+npm run tauri build
+```
+
+产物输出目录：
+
+- macOS: `src-tauri/target/release/bundle/dmg/`
+- Windows: `src-tauri/target/release/bundle/msi/`
+- Linux: `src-tauri/target/release/bundle/deb/` 与 `src-tauri/target/release/bundle/rpm/`
 
 ## 🙏 致谢
 

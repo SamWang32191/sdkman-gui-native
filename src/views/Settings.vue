@@ -43,6 +43,10 @@
             <input type="radio" v-model="language" value="zh" />
             <span>{{ $t('settings.languageChinese') }}</span>
           </label>
+          <label class="radio-label">
+            <input type="radio" v-model="language" value="zh-TW" />
+            <span>{{ $t('settings.languageTraditionalChinese') }}</span>
+          </label>
         </div>
       </div>
 
@@ -111,6 +115,7 @@ import { ref, onMounted, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
+import { detectLocaleFromSystemLanguage, updateTrayLanguage } from '../i18n'
 
 const { t, locale } = useI18n()
 
@@ -152,9 +157,8 @@ async function loadSettings() {
 
     // 应用语言设置
     if (language.value === 'auto') {
-      // 如果是自动模式，检测系统语言
-      const browserLang = navigator.language || (navigator as any).userLanguage
-      locale.value = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+      // 如果是自动模式，检测系统语言并区分简繁体
+      locale.value = detectLocaleFromSystemLanguage()
     } else {
       locale.value = language.value
     }
@@ -229,15 +233,13 @@ watch([theme, language, proxyType, proxyHost, proxyPort, sdkmanPath], () => {
 // 监听语言变化，实时切换
 watch(language, async (newLang) => {
   if (newLang === 'auto') {
-    // 如果选择自动，检测系统语言
-    const browserLang = navigator.language || (navigator as any).userLanguage
-    locale.value = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+    // 如果选择自动，检测系统语言并区分简繁体
+    locale.value = detectLocaleFromSystemLanguage()
   } else {
     locale.value = newLang
   }
   // 更新托盘菜单语言
-  const { updateTrayLanguage } = await import('../i18n')
-  updateTrayLanguage(locale.value)
+  await updateTrayLanguage(locale.value)
 })
 
 onMounted(async () => {
